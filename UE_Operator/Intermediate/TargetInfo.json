@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "UE_Operator",
+			"Path": "C:\\UE4\\Sources\\UE_Operator\\Source\\UE_Operator.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "UE_OperatorEditor",
+			"Path": "C:\\UE4\\Sources\\UE_Operator\\Source\\UE_OperatorEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

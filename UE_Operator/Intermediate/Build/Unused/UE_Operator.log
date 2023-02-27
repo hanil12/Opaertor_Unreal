@@ -1,0 +1,4 @@
+﻿  Parsing headers for UE_OperatorEditor
+    Running UnrealHeaderTool "C:\UE4\Sources\UE_Operator\UE_Operator.uproject" "C:\UE4\Sources\UE_Operator\Intermediate\Build\Win64\UE_OperatorEditor\Development\UE_OperatorEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\최한일\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
+C:/UE4/Sources/UE_Operator/Source/UE_Operator/MyActor.h(29): error : Member variable declaration: Missing variable type
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.MakeFile.Targets(45,5): error MSB3073: "D:\UE_4.26\Engine\Build\BatchFiles\Build.bat UE_OperatorEditor Win64 Development -Project="C:\UE4\Sources\UE_Operator\UE_Operator.uproject" -WaitMutex -FromMsBuild" 명령이 종료되었습니다(코드: 6).

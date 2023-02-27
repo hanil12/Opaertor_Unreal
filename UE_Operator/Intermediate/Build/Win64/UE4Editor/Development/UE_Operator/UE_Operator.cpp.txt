@@ -1,0 +1,2 @@
+C:\UE4\Sources\UE_Operator\Intermediate\Build\Win64\UE4Editor\Development\UE_Operator\Definitions.UE_Operator.h
+C:\UE4\Sources\UE_Operator\Source\UE_Operator\UE_Operator.h
