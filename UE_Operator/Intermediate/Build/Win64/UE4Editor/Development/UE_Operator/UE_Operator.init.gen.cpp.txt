@@ -1,3 +1,0 @@
-C:\UE4\Sources\UE_Operator\Intermediate\Build\Win64\UE4Editor\Development\UE_Operator\Definitions.UE_Operator.h
-D:\UE_4.26\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
-D:\UE_4.26\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
