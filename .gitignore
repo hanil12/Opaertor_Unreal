@@ -50,7 +50,7 @@ UE_Operator/Binaries/*
 UE_Operator/Plugins/*/Binaries/*
 
 # Builds
-UE_Operator/Build/*
+UE_Operator\Build/*
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
 !Build/*/
