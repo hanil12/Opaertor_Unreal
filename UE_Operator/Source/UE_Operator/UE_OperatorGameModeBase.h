@@ -13,5 +13,6 @@ UCLASS()
 class UE_OPERATOR_API AUE_OperatorGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+	AUE_OperatorGameModeBase();
 	
 };
