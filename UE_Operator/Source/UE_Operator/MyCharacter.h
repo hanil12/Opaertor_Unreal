@@ -43,6 +43,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsTurnRight() { return _isTurnRight; }
 
+	UFUNCTION()
+	void OnAttackMontageEnded(UAnimMontage* montage, bool bInterrupted);
+
+	void Attack();
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMesh* _mesh;
@@ -64,4 +69,13 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Meta = (AllowPrivateAccess = true))
 	bool _isTurnLeft;
+
+	UPROPERTY(VisibleAnywhere, Meta = (AllowPrivateAccess = true))
+	bool _isAttacking = false;
+
+	UPROPERTY(VisibleAnywhere, Meta = (AllowPrivateAccess = true))
+	int32 _attackIndex = 0;
+
+	UPROPERTY()
+	class UMyAnimInstance* _animInstance;
 };

@@ -13,8 +13,14 @@ UCLASS()
 class UE_OPERATOR_API UMyAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
+	public:
+
+	UMyAnimInstance();
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+	void PlayerAttackMontage();
+	void JumpToSection(int32 sectionIndex);
 
 	private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -40,4 +46,7 @@ class UE_OPERATOR_API UMyAnimInstance : public UAnimInstance
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool _turnRight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* _attackMontage;
 };

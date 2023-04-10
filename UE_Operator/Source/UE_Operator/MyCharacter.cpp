@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Math/UnrealMath.h"
+#include "MyAnimInstance.h"
 
 // Log ย๏ดย นý
 // UE_LOG(LogTemp, Log, TEXT("Pitch Value : %f"), value);
@@ -46,13 +47,17 @@ AMyCharacter::AMyCharacter()
 
 	// Character Rotation Setting
 	GetCharacterMovement()->bOrientRotationToMovement = false;
-	GetCharacterMovement()->RotationRate.Yaw = 120;
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	GetCharacterMovement()->RotationRate.Yaw = 240;
 }
 
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	_animInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
+	_animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackMontageEnded);
 }
 
 // Called every frame
@@ -68,6 +73,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &AMyCharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AMyCharacter::Attack);
 
 	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AMyCharacter::UpDown);
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AMyCharacter::LeftRight);
@@ -104,26 +110,46 @@ void AMyCharacter::Yaw(float value)
 	{
 		_isTurnRight = true;
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
-		GetCharacterMovement()->bOrientRotationToMovement = false;
 	}
 	else if(degree < - 90.0f)
 	{
 		_isTurnLeft = true;
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
-		GetCharacterMovement()->bOrientRotationToMovement = false;
+	}
+	else if (GetCharacterMovement()->Velocity.Size() > 0.01f || _isAttacking)
+	{
+		GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	}
 	else if(FMath::Abs(degree) < 0.1f)
 	{
 		_isTurnLeft = false;
 		_isTurnRight = false;
 		GetCharacterMovement()->bUseControllerDesiredRotation = false;
-		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
-
 }
 
 void AMyCharacter::Pitch(float value)
 {
 	AddControllerPitchInput(value);
+}
+
+void AMyCharacter::Attack()
+{
+	if(_isAttacking)
+		return;
+
+	GetCharacterMovement()->RotationRate.Yaw = 360;
+	_animInstance->PlayerAttackMontage();
+	_animInstance->JumpToSection(_attackIndex);
+
+	_attackIndex = (_attackIndex + 1) % 3;
+
+	_isAttacking = true;
+}
+
+void AMyCharacter::OnAttackMontageEnded(UAnimMontage* montage, bool bInterrupted)
+{
+	_isAttacking = false;
+	GetCharacterMovement()->RotationRate.Yaw = 240;
 }
 

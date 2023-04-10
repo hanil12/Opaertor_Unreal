@@ -8,6 +8,16 @@
 #include "Math/UnrealMathUtility.h"
 #include "MyCharacter.h"
 
+UMyAnimInstance::UMyAnimInstance()
+{
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> animMontage(TEXT("AnimMontage'/Game/BluePrint/MyCharacterAnimMontage_BP.MyCharacterAnimMontage_BP'"));
+
+	if (animMontage.Succeeded())
+	{
+		_attackMontage = animMontage.Object;
+	}
+}
+
 void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
@@ -34,4 +44,18 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 			_turnRight = character->IsTurnRight();
 		}
 	}
+}
+
+void UMyAnimInstance::PlayerAttackMontage()
+{
+	if (!Montage_IsPlaying(_attackMontage))
+	{
+		Montage_Play(_attackMontage);
+	}
+}
+
+void UMyAnimInstance::JumpToSection(int32 sectionIndex)
+{
+	FName sectionName = FName(*FString::Printf(TEXT("PrimaryAttack%d"), sectionIndex));
+	Montage_JumpToSection(sectionName, _attackMontage);
 }
