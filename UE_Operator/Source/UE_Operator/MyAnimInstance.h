@@ -6,6 +6,8 @@
 #include "Animation/AnimInstance.h"
 #include "MyAnimInstance.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnAttackHit);
+
 /**
  * 
  */
@@ -13,7 +15,7 @@ UCLASS()
 class UE_OPERATOR_API UMyAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
-	public:
+public:
 
 	UMyAnimInstance();
 
@@ -22,7 +24,11 @@ class UE_OPERATOR_API UMyAnimInstance : public UAnimInstance
 	void PlayerAttackMontage();
 	void JumpToSection(int32 sectionIndex);
 
-	private:
+private:
+	UFUNCTION()
+	void AnimNotify_AttackHit();
+
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float _speed;
 
@@ -48,5 +54,11 @@ class UE_OPERATOR_API UMyAnimInstance : public UAnimInstance
 	bool _turnRight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool _isAttacking;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* _attackMontage;
+
+public:
+	FOnAttackHit _onAttackHit;
 };

@@ -42,6 +42,7 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 			_turnLeft = character->IsTurnLeft();
 			_turnRight = character->IsTurnRight();
+			_isAttacking = character->IsAttacking();
 		}
 	}
 }
@@ -58,4 +59,9 @@ void UMyAnimInstance::JumpToSection(int32 sectionIndex)
 {
 	FName sectionName = FName(*FString::Printf(TEXT("PrimaryAttack%d"), sectionIndex));
 	Montage_JumpToSection(sectionName, _attackMontage);
+}
+
+void UMyAnimInstance::AnimNotify_AttackHit()
+{
+	_onAttackHit.Broadcast();
 }

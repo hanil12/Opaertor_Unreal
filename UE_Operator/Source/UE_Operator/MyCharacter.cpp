@@ -51,13 +51,22 @@ AMyCharacter::AMyCharacter()
 	GetCharacterMovement()->RotationRate.Yaw = 240;
 }
 
+void AMyCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	_animInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
+	if (IsValid(_animInstance))
+	{
+		_animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackMontageEnded);
+		// _animInstance->_onAttackHit.AddUObject(this, )
+	}
+}
+
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	_animInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
-	_animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackMontageEnded);
 }
 
 // Called every frame
@@ -145,6 +154,29 @@ void AMyCharacter::Attack()
 	_attackIndex = (_attackIndex + 1) % 3;
 
 	_isAttacking = true;
+}
+
+void AMyCharacter::AttackCheck()
+{
+	//FHitResult hitresult;
+	//FCollisionQueryParams params(NAME_None, false, this);
+
+	//float attackRange = 100.0f;
+	//float attackRadius = 50.0f;
+
+	//bool boolResult = GetWorld()->SweepSingleByChannel(
+	//OUT hitresult,
+	//GetActorLocation(),
+	//GetActorLocation() + GetActorForwardVector() * attackRange,
+	//FQuat::Identity,
+	//ECollisionChannel::ECC_EngineTraceChannel2,
+	//FCollisionShape::MakeSphere(attackRadius),
+	//params);
+
+	//if (boolResult && hitresult.Actor.IsValid())
+	//{
+	//	UE_LOG(LogTemp,Log, TEXT("Hit Actor : %s"), *hitresult.Actor->GetName());
+	//}
 }
 
 void AMyCharacter::OnAttackMontageEnded(UAnimMontage* montage, bool bInterrupted)

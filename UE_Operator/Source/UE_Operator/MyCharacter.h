@@ -17,6 +17,7 @@ public:
 
 protected:
 	// Called when the game starts or when spawned
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 
 public:	
@@ -43,10 +44,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsTurnRight() { return _isTurnRight; }
 
+	UFUNCTION(BlueprintCallable)
+	bool IsAttacking() { return _isAttacking; }
+
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* montage, bool bInterrupted);
 
 	void Attack();
+	void AttackCheck();
 
 private:
 	UPROPERTY(VisibleAnywhere)
