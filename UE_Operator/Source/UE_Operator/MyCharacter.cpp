@@ -2,16 +2,21 @@
 
 
 #include "MyCharacter.h"
+
+#include "DrawDebugHelpers.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Math/UnrealMath.h"
 #include "MyAnimInstance.h"
+#include "MyHpWidget.h"
+#include "StatComponent.h"
+#include "Components/WidgetComponent.h"
 
-// Log Âï´Â ¹ý
+// Log ï¿½ï¿½ï¿½ ï¿½ï¿½
 // UE_LOG(LogTemp, Log, TEXT("Pitch Value : %f"), value);
-// LogCategoryµµ ³»°¡ Á÷Á¢ ¸¸µé ¼ö ÀÖ´Ù.
+// LogCategoryï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -19,6 +24,7 @@ AMyCharacter::AMyCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+#pragma region SpringArm&Camera
 	_springArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
 	_camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
 
@@ -26,12 +32,13 @@ AMyCharacter::AMyCharacter()
 	_camera->SetupAttachment(_springArm);
 
 	_springArm->TargetArmLength = 500.0f;
-	_springArm->SetRelativeRotation(FRotator(-35.0f,0.0f,0.0f));
 
 	_springArm->bUsePawnControlRotation = true;
 	_camera->bUsePawnControlRotation = false;
 	bUseControllerRotationYaw = false;
+#pragma endregion
 
+#pragma region SetMesh&Character
 	GetMesh()->SetRelativeLocationAndRotation(
 		FVector(0.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
 
@@ -40,15 +47,31 @@ AMyCharacter::AMyCharacter()
 	if (SM.Succeeded())
 		GetMesh()->SetSkeletalMesh(SM.Object);
 
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstance(TEXT("AnimBlueprint'/Game/BluePrint/MyAnimInstance_BP.MyAnimInstance_BP_C'"));
-
-	if (AnimInstance.Succeeded())
-		GetMesh()->AnimClass = AnimInstance.Class;
-
 	// Character Rotation Setting
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	GetCharacterMovement()->RotationRate.Yaw = 240;
+#pragma endregion 
+
+#pragma region AnimationInstance
+	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstance(TEXT("AnimBlueprint'/Game/BluePrint/MyAnimInstance_BP.MyAnimInstance_BP_C'"));
+
+	if (AnimInstance.Succeeded())
+		GetMesh()->AnimClass = AnimInstance.Class;
+#pragma endregion
+
+	_statComponent = CreateDefaultSubobject<UStatComponent>(TEXT("Stat"));
+	_hpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBAR"));
+	_hpBarWidget->SetupAttachment(GetMesh());
+	_hpBarWidget->SetRelativeLocation(FVector(0.0f,0.0f,230.0f));
+	_hpBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> UW(TEXT("WidgetBlueprint'/Game/UI/BP_UI.BP_UI_C'"));
+	if(UW.Succeeded())
+	{
+		_hpBarWidget->SetWidgetClass(UW.Class);
+		_hpBarWidget->SetDrawSize(FVector2D(200.0f,50.0f));
+	}
 }
 
 void AMyCharacter::PostInitializeComponents()
@@ -59,7 +82,14 @@ void AMyCharacter::PostInitializeComponents()
 	if (IsValid(_animInstance))
 	{
 		_animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackMontageEnded);
-		// _animInstance->_onAttackHit.AddUObject(this, )
+		_animInstance->_onAttackHit.AddUObject(this, &AMyCharacter::AttackCheck);
+	}
+
+	_hpBarWidget->InitWidget();
+	auto hpWidget = Cast<UMyHpWidget>(_hpBarWidget->GetUserWidgetObject());
+	if(hpWidget)
+	{
+		hpWidget->BindHp(_statComponent);
 	}
 }
 
@@ -88,6 +118,14 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AMyCharacter::LeftRight);
 	PlayerInputComponent->BindAxis(TEXT("Yaw"), this, &AMyCharacter::Yaw);
 	PlayerInputComponent->BindAxis(TEXT("Pitch"), this, &AMyCharacter::Pitch);
+}
+
+float AMyCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	_statComponent->Damaged(Damage);
+
+	return Damage;
 }
 
 void AMyCharacter::UpDown(float value)
@@ -158,25 +196,57 @@ void AMyCharacter::Attack()
 
 void AMyCharacter::AttackCheck()
 {
-	//FHitResult hitresult;
-	//FCollisionQueryParams params(NAME_None, false, this);
+	FHitResult hitResult;
+	FCollisionQueryParams params(NAME_None, false, this);
 
-	//float attackRange = 100.0f;
-	//float attackRadius = 50.0f;
+	float attackRange = 1900.0f;
+	float attackRadius = 50.0f;
 
-	//bool boolResult = GetWorld()->SweepSingleByChannel(
-	//OUT hitresult,
-	//GetActorLocation(),
-	//GetActorLocation() + GetActorForwardVector() * attackRange,
-	//FQuat::Identity,
-	//ECollisionChannel::ECC_EngineTraceChannel2,
-	//FCollisionShape::MakeSphere(attackRadius),
-	//params);
+	FVector hitScanStart = _camera->GetComponentLocation();
+	FVector hitScanEnd = _camera->GetComponentLocation() + _camera->GetForwardVector() * attackRange;
+	
+	bool boolResult = GetWorld()->LineTraceSingleByChannel(
+		OUT hitResult,
+		hitScanStart,
+		hitScanEnd,
+		ECollisionChannel::ECC_GameTraceChannel2,
+		params);
 
-	//if (boolResult && hitresult.Actor.IsValid())
-	//{
-	//	UE_LOG(LogTemp,Log, TEXT("Hit Actor : %s"), *hitresult.Actor->GetName());
-	//}
+	// ìº¡ìŠ ì¶©ëŒ
+	// bool boolResult = GetWorld()->SweepSingleByChannel(
+	// OUT hitResult,
+	// GetActorLocation(),
+	// GetActorLocation() + GetActorForwardVector() * attackRange,
+	// FQuat::Identity,
+	// ECollisionChannel::ECC_GameTraceChannel2,
+	// FCollisionShape::MakeSphere(attackRadius),
+	// params);
+
+	FColor DrawColor;
+	if (boolResult)
+	{
+		DrawColor = FColor::Red;
+	}
+	else
+	{
+		DrawColor = FColor::Green;
+	}
+	
+	
+	// ìº¡ìŠ ì¶©ëŒ DrawDebug
+	// FVector vec = GetActorForwardVector() * attackRange;
+	// FVector center = GetActorLocation() + vec * 0.5f;
+	// float halfHeight = attackRange * 0.5f + attackRadius;
+	// FQuat rotation = FRotationMatrix::MakeFromZ(vec).ToQuat();
+	// DrawDebugCapsule(GetWorld(), center, halfHeight, attackRadius, rotation, DrawColor, false, 2.0f);
+	
+	DrawDebugLine(GetWorld(), hitScanStart, hitScanEnd,DrawColor, false, 2.0f);
+
+	if(boolResult && hitResult.Actor.IsValid())
+	{
+		FDamageEvent damageEvent;
+		hitResult.Actor->TakeDamage(_statComponent->GetAtk(), damageEvent, GetController(), this);
+	}
 }
 
 void AMyCharacter::OnAttackMontageEnded(UAnimMontage* montage, bool bInterrupted)

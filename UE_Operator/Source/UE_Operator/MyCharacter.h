@@ -26,7 +26,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	
 	void UpDown(float value);
 	void LeftRight(float value);
 	void Yaw(float value);
@@ -83,4 +84,8 @@ private:
 
 	UPROPERTY()
 	class UMyAnimInstance* _animInstance;
+	UPROPERTY()
+	class UStatComponent* _statComponent;
+	UPROPERTY()
+	class UWidgetComponent* _hpBarWidget;
 };
