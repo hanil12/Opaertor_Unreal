@@ -4,6 +4,7 @@
 #include "MyCharacter.h"
 
 #include "DrawDebugHelpers.h"
+#include "MyAIController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
@@ -72,6 +73,9 @@ AMyCharacter::AMyCharacter()
 		_hpBarWidget->SetWidgetClass(UW.Class);
 		_hpBarWidget->SetDrawSize(FVector2D(200.0f,50.0f));
 	}
+
+	AIControllerClass = AMyAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 void AMyCharacter::PostInitializeComponents()
@@ -253,5 +257,6 @@ void AMyCharacter::OnAttackMontageEnded(UAnimMontage* montage, bool bInterrupted
 {
 	_isAttacking = false;
 	GetCharacterMovement()->RotationRate.Yaw = 240;
+	_attackEnd.Broadcast();
 }
 

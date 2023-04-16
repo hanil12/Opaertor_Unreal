@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FAttackEnd)
+
 UCLASS()
 class UE_OPERATOR_API AMyCharacter : public ACharacter
 {
@@ -53,6 +55,8 @@ public:
 
 	void Attack();
 	void AttackCheck();
+
+	FAttackEnd _attackEnd;
 
 private:
 	UPROPERTY(VisibleAnywhere)
