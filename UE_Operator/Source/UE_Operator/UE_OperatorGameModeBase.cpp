@@ -2,11 +2,11 @@
 
 
 #include "UE_OperatorGameModeBase.h"
-#include "MyCharacter.h"
+#include "MyPlayerCharacter.h"
 
 AUE_OperatorGameModeBase::AUE_OperatorGameModeBase()
 {
-	static ConstructorHelpers::FClassFinder<ACharacter> BP_MyCharacter(TEXT("Blueprint'/Game/BluePrint/MyCharacter_BP.MyCharacter_BP_C'"));
+	static ConstructorHelpers::FClassFinder<AMyPlayerCharacter> BP_MyCharacter(TEXT("Blueprint'/Game/BluePrint/Player_BP.Player_BP_C'"));
 	if (BP_MyCharacter.Succeeded())
 	{
 		DefaultPawnClass = BP_MyCharacter.Class;

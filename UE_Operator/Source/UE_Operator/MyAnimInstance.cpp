@@ -43,6 +43,7 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 			_turnLeft = character->IsTurnLeft();
 			_turnRight = character->IsTurnRight();
 			_isAttacking = character->IsAttacking();
+			_isDead = character->IsDead();
 		}
 	}
 }

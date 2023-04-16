@@ -4,7 +4,8 @@
 #include "BTDeco_CanAttack.h"
 
 #include "AIController.h"
-#include "MyCharacter.h"
+#include "MyEnemyCharacter.h"
+#include "MyPlayerCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTDeco_CanAttack::UBTDeco_CanAttack()
@@ -16,14 +17,14 @@ bool UBTDeco_CanAttack::CalculateRawConditionValue(UBehaviorTreeComponent& Owner
 {
 	bool bResult = Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 
-	auto currentPawn = Cast<AMyCharacter>(OwnerComp.GetAIOwner()->GetPawn());
+	auto currentPawn = Cast<AMyEnemyCharacter>(OwnerComp.GetAIOwner()->GetPawn());
 	if(currentPawn == nullptr)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Cant attack1"));
 		return false;
 	}
 
-	auto target = Cast<AMyCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName(TEXT("Target"))));
+	auto target = Cast<AMyPlayerCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName(TEXT("Target"))));
 	if(target == nullptr)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Cant attack2"));

@@ -8,6 +8,7 @@
 #include "StatComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FHpChangedRatio, float)
+DECLARE_MULTICAST_DELEGATE(FOnDeath)
 
 USTRUCT()
 struct FCharacterStat : public FTableRowBase
@@ -55,11 +56,13 @@ public:
 	int32 GetCurMp() const { return _curMp; }
 	int32 GetMaxMp() const { return _maxMp; }
 	int32 GetAtk()   const { return _atk; }
+	bool IsDead() const { return _curHp == 0; }
 
 	float GetHpRatio();
 
 	
 	FHpChangedRatio _onHpChangedRatio;
+	FOnDeath _death;
 	
 private:
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess))

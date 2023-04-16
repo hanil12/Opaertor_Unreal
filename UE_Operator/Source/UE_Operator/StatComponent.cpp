@@ -49,7 +49,10 @@ void UStatComponent::SetStatByLevel(int32 level)
 void UStatComponent::SetHp(int32 hp)
 {
 	if(hp < 0)
+	{
 		_curHp = 0;
+		_death.Broadcast();
+	}
 	else
 		_curHp = hp;
 

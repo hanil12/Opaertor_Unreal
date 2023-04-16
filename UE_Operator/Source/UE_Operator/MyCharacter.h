@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "StatComponent.h"
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
@@ -30,44 +31,27 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	
-	void UpDown(float value);
-	void LeftRight(float value);
-	void Yaw(float value);
-	void Pitch(float value);
-
-	UFUNCTION(BlueprintCallable)
-	float UpDownValue() { return _upDown; }
-
-	UFUNCTION(BlueprintCallable)
-	float LeftRightValue() { return _leftRight; }
-
-	UFUNCTION(BlueprintCallable)
-	bool IsTurnLeft() { return _isTurnLeft; }
-
-	UFUNCTION(BlueprintCallable)
-	bool IsTurnRight() { return _isTurnRight; }
-
-	UFUNCTION(BlueprintCallable)
-	bool IsAttacking() { return _isAttacking; }
+	float UpDownValue() const { return _upDown; }
+	float LeftRightValue() const { return _leftRight; }
+	bool IsTurnLeft() const { return _isTurnLeft; }
+	bool IsTurnRight() const { return _isTurnRight; }
+	bool IsAttacking() const { return _isAttacking; }
+	bool IsDead() const { return _statComponent->IsDead();}
 
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* montage, bool bInterrupted);
 
 	void Attack();
-	void AttackCheck();
+	virtual void AttackCheck() {}
 
 	FAttackEnd _attackEnd;
 
-private:
+protected:
+	virtual void SetMesh() {}
+	
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMesh* _mesh;
-
-	UPROPERTY(VisibleAnywhere)
-	class USpringArmComponent* _springArm;
-
-	UPROPERTY(VisibleAnywhere)
-	class UCameraComponent* _camera;
-
+	
 	UPROPERTY(VisibleAnywhere, Meta = (AllowPrivateAccess = true))
 	float _upDown;
 

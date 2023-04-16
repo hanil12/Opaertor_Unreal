@@ -18,4 +18,5 @@ public:
 	UBTService_SeachTarget();
 	
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+	void SearchTarget(UBehaviorTreeComponent& OwnerComp);
 };

@@ -5,7 +5,7 @@
 
 #include "AIController.h"
 #include "MyAIController.h"
-#include "MyCharacter.h"
+#include "MyPlayerCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DrawDebugHelpers.h"
 
@@ -19,6 +19,11 @@ void UBTService_SeachTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
+	SearchTarget(OwnerComp);
+}
+
+void UBTService_SeachTarget::SearchTarget(UBehaviorTreeComponent& OwnerComp)
+{
 	auto currentPawn = OwnerComp.GetAIOwner()->GetPawn();
 	UWorld* world = currentPawn->GetWorld();
 
@@ -49,10 +54,10 @@ void UBTService_SeachTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 	{
 		for(auto& result : overlapResult)
 		{
-			AMyCharacter* myCharacter = Cast<AMyCharacter>(result.GetActor());
-			if(myCharacter && myCharacter->GetController()->IsPlayerController())
+			AMyPlayerCharacter* player = Cast<AMyPlayerCharacter>(result.GetActor());
+			if(player && player->GetController()->IsPlayerController())
 			{
-				OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName(TEXT("Target")), myCharacter);
+				OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName(TEXT("Target")), player);
 
 				DrawDebugSphere(world, center, SearchRadius, 16, FColor::Red,false, 2.0f);
 				

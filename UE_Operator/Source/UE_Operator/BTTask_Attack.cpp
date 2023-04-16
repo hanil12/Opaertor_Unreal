@@ -4,7 +4,10 @@
 #include "BTTask_Attack.h"
 
 #include "AIController.h"
-#include "MyCharacter.h"
+#include "MyEnemyCharacter.h"
+#include "MyPlayerCharacter.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UBTTask_Attack::UBTTask_Attack()
 {
@@ -15,14 +18,21 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 {
 	auto result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	auto myCharacter = Cast<AMyCharacter>(OwnerComp.GetAIOwner()->GetPawn());
-
-	if(myCharacter == nullptr)
+	UE_LOG(LogTemp, Warning, TEXT("Attack! IN"));
+	auto myCharacter = Cast<AMyEnemyCharacter>(OwnerComp.GetAIOwner()->GetPawn());
+	auto player = Cast<AMyPlayerCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName(TEXT("Target"))));
+	
+	if(myCharacter == nullptr || player == nullptr)
 	{
 		return EBTNodeResult::Failed;
 	}
 
+	FVector playerLocation = player->GetActorLocation();
+	FRotator rotator = UKismetMathLibrary::FindLookAtRotation(myCharacter->GetActorLocation(), playerLocation);
+	
+	myCharacter->SetActorRotation(rotator);
 	myCharacter->Attack();
+	UE_LOG(LogTemp, Log, TEXT("Attack!!!"));
 	bIsAttacking = true;
 	myCharacter->_attackEnd.AddLambda([this]() { this->bIsAttacking = false; });
 	
