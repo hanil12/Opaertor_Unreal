@@ -7,6 +7,8 @@
 #include "MyAnimInstance.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnAttackHit);
+DECLARE_MULTICAST_DELEGATE(FOnDeathEnd);
+DECLARE_MULTICAST_DELEGATE(FOnDeathStart);
 
 /**
  * 
@@ -27,6 +29,10 @@ public:
 private:
 	UFUNCTION()
 	void AnimNotify_AttackHit();
+	UFUNCTION()
+	void AnimNotify_Dead();
+	UFUNCTION()
+	void AnimNotify_DeadStart();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -64,4 +70,6 @@ private:
 
 public:
 	FOnAttackHit _onAttackHit;
+	FOnDeathEnd	 _onDeathEnd;
+	FOnDeathStart _onDeathStart;
 };

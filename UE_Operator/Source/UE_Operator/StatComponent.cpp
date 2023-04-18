@@ -20,7 +20,6 @@ void UStatComponent::InitializeComponent()
 	Super::InitializeComponent();
 	SetStatByLevel(1);
 	SetHp(_maxHp);
-	_curMp = _maxMp;
 }
 
 
@@ -36,6 +35,7 @@ void UStatComponent::BeginPlay()
 void UStatComponent::SetStatByLevel(int32 level)
 {
 	auto myGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	
 	if(IsValid(myGameInstance))
 	{
 		auto stat = *myGameInstance->GetStatData(level);
@@ -43,7 +43,11 @@ void UStatComponent::SetStatByLevel(int32 level)
 		_maxHp = stat.maxHp;
 		_maxMp = stat.maxMp;
 		_atk = stat.attack;
+		_curHp = stat.maxHp;
+		_maxMp = stat.maxMp;
 	}
+
+	SetHp(_curHp);
 }
 
 void UStatComponent::SetHp(int32 hp)

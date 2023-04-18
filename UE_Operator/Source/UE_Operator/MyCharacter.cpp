@@ -11,6 +11,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Math/UnrealMath.h"
 #include "MyAnimInstance.h"
+#include "MyGameInstance.h"
 #include "MyHpWidget.h"
 #include "StatComponent.h"
 #include "Components/WidgetComponent.h"
@@ -54,7 +55,8 @@ void AMyCharacter::PostInitializeComponents()
 	if (IsValid(_animInstance))
 	{
 		_animInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackMontageEnded);
-		// _animInstance->_onAttackHit.AddUObject(this, &AMyCharacter::AttackCheck);
+		_animInstance->_onDeathEnd.AddUObject(this, &AMyCharacter::Died);
+		_animInstance->_onDeathStart.AddUObject(this, &AMyCharacter::DiedStart);
 	}
 
 	_hpBarWidget->InitWidget();
@@ -75,7 +77,6 @@ void AMyCharacter::BeginPlay()
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -104,6 +105,22 @@ void AMyCharacter::Attack()
 	_attackIndex = (_attackIndex + 1) % 3;
 
 	_isAttacking = true;
+}
+
+void AMyCharacter::Died()
+{
+	SetActorHiddenInGame(true);
+	
+	for(auto component : GetComponents())
+	{
+		component->Deactivate();
+	}
+}
+
+void AMyCharacter::DiedStart()
+{
+	Cast<UMyGameInstance>(GetGameInstance())->PlayEffect("Death",GetActorLocation());
+	GetController()->UnPossess();
 }
 
 void AMyCharacter::OnAttackMontageEnded(UAnimMontage* montage, bool bInterrupted)

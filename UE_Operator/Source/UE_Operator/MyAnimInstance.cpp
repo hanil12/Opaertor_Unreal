@@ -66,3 +66,13 @@ void UMyAnimInstance::AnimNotify_AttackHit()
 {
 	_onAttackHit.Broadcast();
 }
+
+void UMyAnimInstance::AnimNotify_Dead()
+{
+	_onDeathEnd.Broadcast();
+}
+
+void UMyAnimInstance::AnimNotify_DeadStart()
+{
+	_onDeathStart.Broadcast();
+}

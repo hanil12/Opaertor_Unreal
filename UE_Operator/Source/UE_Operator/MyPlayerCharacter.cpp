@@ -5,6 +5,7 @@
 
 #include "DrawDebugHelpers.h"
 #include "MyAnimInstance.h"
+#include "MyGameInstance.h"
 #include "StatComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -39,6 +40,9 @@ void AMyPlayerCharacter::PostInitializeComponents()
 
 	if(IsValid(_animInstance))
 		_animInstance->_onAttackHit.AddUObject(this, &AMyPlayerCharacter::AttackCheck);
+
+	_statComponent->SetStatByLevel(5);
+	_statComponent->SetFullHp();
 }
 
 void AMyPlayerCharacter::SetMesh()
@@ -157,6 +161,7 @@ void AMyPlayerCharacter::AttackCheck()
 	{
 		FDamageEvent damageEvent;
 		hitResult.Actor->TakeDamage(_statComponent->GetAtk(), damageEvent, GetController(), this);
+		Cast<UMyGameInstance>(GetGameInstance())->PlayEffect("AttackHit",hitResult.Location);
 	}
 }
 

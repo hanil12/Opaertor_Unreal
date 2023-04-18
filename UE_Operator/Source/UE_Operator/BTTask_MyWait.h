@@ -13,6 +13,6 @@ UCLASS()
 class UE_OPERATOR_API UBTTask_MyWait : public UBTTask_Wait
 {
 	GENERATED_BODY()
-	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds);
+	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 	bool SearchTarget(UBehaviorTreeComponent& OwnerComp);
 };

@@ -55,7 +55,11 @@ void UBTService_SeachTarget::SearchTarget(UBehaviorTreeComponent& OwnerComp)
 		for(auto& result : overlapResult)
 		{
 			AMyPlayerCharacter* player = Cast<AMyPlayerCharacter>(result.GetActor());
-			if(player && player->GetController()->IsPlayerController())
+			
+			if(player == nullptr || player->GetController() == nullptr)
+				continue;
+			
+			if(player->GetController()->IsPlayerController() && !player->IsHidden())
 			{
 				OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName(TEXT("Target")), player);
 

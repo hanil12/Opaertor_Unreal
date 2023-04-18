@@ -16,7 +16,6 @@ void UBTTask_MyWait::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 	}
-	
 }
 
 bool UBTTask_MyWait::SearchTarget(UBehaviorTreeComponent& OwnerComp)

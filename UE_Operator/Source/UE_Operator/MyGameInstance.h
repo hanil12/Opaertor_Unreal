@@ -20,8 +20,14 @@ public:
 	virtual void Init() override;
 
 	FCharacterStat* GetStatData(int32 level);
+
+	void PlayEffect(FString name, FVector pos);
 	
 private:
 	UPROPERTY()
 	class UDataTable* _dataTable;
+
+	UPROPERTY()
+
+	TMap<FString, UParticleSystem*> _emitterTable;
 };

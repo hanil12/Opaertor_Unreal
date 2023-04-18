@@ -6,6 +6,7 @@
 #include "DrawDebugHelpers.h"
 #include "MyAIController.h"
 #include "MyAnimInstance.h"
+#include "MyGameInstance.h"
 #include "StatComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -59,6 +60,7 @@ void AMyEnemyCharacter::AttackCheck()
 	{
 		FDamageEvent damageEvent;
 		hitResult.Actor->TakeDamage(_statComponent->GetAtk(), damageEvent, GetController(), this);
+		Cast<UMyGameInstance>(GetGameInstance())->PlayEffect("AttackHit",hitResult.Location);
 	}
 }
 

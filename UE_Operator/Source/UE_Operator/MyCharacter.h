@@ -43,6 +43,8 @@ public:
 
 	void Attack();
 	virtual void AttackCheck() {}
+	void Died();
+	void DiedStart();
 
 	FAttackEnd _attackEnd;
 
