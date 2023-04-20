@@ -22,6 +22,8 @@ void AMyEnemyCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+
 	if(IsValid(_animInstance))
 		_animInstance->_onAttackHit.AddUObject(this, &AMyEnemyCharacter::AttackCheck);
 }

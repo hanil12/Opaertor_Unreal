@@ -10,7 +10,10 @@
 UMyGameInstance::UMyGameInstance()
 {
 	static ConstructorHelpers::FObjectFinder<UDataTable> dataTable(TEXT("DataTable'/Game/Data/StatDataTable.StatDataTable'"));
-	_dataTable = dataTable.Object;
+	_statDataTable = dataTable.Object;
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> aiDataTable(TEXT("DataTable'/Game/Data/AIInfoTable.AIInfoTable'"));
+	_aiDataTable = aiDataTable.Object;
 }
 
 void UMyGameInstance::Init()
@@ -24,9 +27,14 @@ void UMyGameInstance::Init()
 FCharacterStat* UMyGameInstance::GetStatData(int32 level)
 {
 	FName name = *FString::FromInt(level);
-	FCharacterStat* result = _dataTable->FindRow<FCharacterStat>(name, TEXT(""));
+	FCharacterStat* result = _statDataTable->FindRow<FCharacterStat>(name, TEXT(""));
 	
 	return result;
+}
+
+FAIInfo* UMyGameInstance::GetAIInfoData(FString type)
+{
+	return _aiDataTable->FindRow<FAIInfo>(*type, TEXT(""));
 }
 
 void UMyGameInstance::PlayEffect(FString name, FVector pos)

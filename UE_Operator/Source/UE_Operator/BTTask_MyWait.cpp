@@ -5,8 +5,21 @@
 
 #include "AIController.h"
 #include "DrawDebugHelpers.h"
+#include "MyGameInstance.h"
 #include "MyPlayerCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Kismet/GameplayStatics.h"
+
+void UBTTask_MyWait::InitializeFromAsset(UBehaviorTree& Asset)
+{
+	Super::InitializeFromAsset(Asset);
+	auto myGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(UBTNode::GetWorld()));
+
+	if(myGameInstance)
+	{
+		_detectRange = myGameInstance->GetAIInfoData("Remote")->detectRange;
+	}
+}
 
 void UBTTask_MyWait::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
@@ -31,7 +44,7 @@ bool UBTTask_MyWait::SearchTarget(UBehaviorTreeComponent& OwnerComp)
 
 	FVector center = currentPawn->GetActorLocation();
 
-	float SearchRadius =  500.0f;
+	float SearchRadius =  _detectRange;
 
 	TArray<FOverlapResult> overlapResult;
 	FCollisionQueryParams param(NAME_None, false, currentPawn);

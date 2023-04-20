@@ -8,11 +8,24 @@
 #include "MyPlayerCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DrawDebugHelpers.h"
+#include "MyGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 UBTService_SeachTarget::UBTService_SeachTarget()
 {
 	NodeName = TEXT("SearchTarget");
 	Interval = 1.0f;
+}
+
+void UBTService_SeachTarget::InitializeFromAsset(UBehaviorTree& Asset)
+{
+	Super::InitializeFromAsset(Asset);
+	auto myGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(UBTNode::GetWorld()));
+
+	if(myGameInstance)
+	{
+		_detectRange = myGameInstance->GetAIInfoData("Remote")->detectRange;
+	}
 }
 
 void UBTService_SeachTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -35,7 +48,7 @@ void UBTService_SeachTarget::SearchTarget(UBehaviorTreeComponent& OwnerComp)
 
 	FVector center = currentPawn->GetActorLocation();
 
-	float SearchRadius =  500.0f;
+	float SearchRadius =  _detectRange;
 
 	TArray<FOverlapResult> overlapResult;
 	FCollisionQueryParams param(NAME_None, false, currentPawn);

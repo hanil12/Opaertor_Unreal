@@ -5,17 +5,45 @@
 
 #include "AIController.h"
 #include "DrawDebugHelpers.h"
+#include "MyGameInstance.h"
 #include "MyPlayerCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Kismet/GameplayStatics.h"
+
+void UBTTask_MyMoveTo::InitializeFromAsset(UBehaviorTree& Asset)
+{
+	Super::InitializeFromAsset(Asset);
+	auto myGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(UBTNode::GetWorld()));
+
+	if(myGameInstance)
+	{
+		_detectRange = myGameInstance->GetAIInfoData("Remote")->detectRange;
+		_attackAbleRange = myGameInstance->GetAIInfoData("Remote")->attackAbleRange;
+	}
+}
 
 void UBTTask_MyMoveTo::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+	auto player = Cast<AMyPlayerCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName(TEXT("Target"))));
+	auto currentPawn = OwnerComp.GetAIOwner()->GetPawn();
+	
+	if(!player)
+		return;
 
-	if(SearchTarget(OwnerComp))
+	float distance = FVector::Distance(player->GetActorLocation(), currentPawn->GetActorLocation());
+
+	if (distance < (_attackAbleRange - 20))
 	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		AbortTask(OwnerComp, NodeMemory);
 	}
+	else if(distance > _detectRange + 20)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("missed"));
+		OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName(TEXT("Target")), nullptr);
+		AbortTask(OwnerComp, NodeMemory);
+	}
+
+	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 }
 
 bool UBTTask_MyMoveTo::SearchTarget(UBehaviorTreeComponent& OwnerComp)
@@ -31,7 +59,7 @@ bool UBTTask_MyMoveTo::SearchTarget(UBehaviorTreeComponent& OwnerComp)
 
 	FVector center = currentPawn->GetActorLocation();
 
-	float SearchRadius =  450.0f;
+	float SearchRadius =  _detectRange;
 
 	TArray<FOverlapResult> overlapResult;
 	FCollisionQueryParams param(NAME_None, false, currentPawn);

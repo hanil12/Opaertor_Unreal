@@ -23,6 +23,19 @@ struct FCharacterStat : public FTableRowBase
 	int32 maxMp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 attack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float attackRange;
+};
+
+USTRUCT()
+struct FAIInfo : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float detectRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float attackAbleRange;
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )

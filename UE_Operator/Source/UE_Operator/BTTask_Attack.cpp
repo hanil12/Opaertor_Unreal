@@ -17,8 +17,7 @@ UBTTask_Attack::UBTTask_Attack()
 EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	auto result = Super::ExecuteTask(OwnerComp, NodeMemory);
-
-	UE_LOG(LogTemp, Warning, TEXT("Attack! IN"));
+	
 	auto myCharacter = Cast<AMyEnemyCharacter>(OwnerComp.GetAIOwner()->GetPawn());
 	auto player = Cast<AMyPlayerCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName(TEXT("Target"))));
 	
@@ -32,7 +31,6 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	
 	myCharacter->SetActorRotation(rotator);
 	myCharacter->Attack();
-	UE_LOG(LogTemp, Log, TEXT("Attack!!!"));
 	bIsAttacking = true;
 	myCharacter->_attackEnd.AddLambda([this]() { this->bIsAttacking = false; });
 	

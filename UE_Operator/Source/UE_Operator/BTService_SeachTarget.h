@@ -16,7 +16,11 @@ class UE_OPERATOR_API UBTService_SeachTarget : public UBTService
 
 public:
 	UBTService_SeachTarget();
-	
+
+	virtual void InitializeFromAsset(UBehaviorTree& Asset) override;
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 	void SearchTarget(UBehaviorTreeComponent& OwnerComp);
+
+private:
+	float _detectRange;
 };

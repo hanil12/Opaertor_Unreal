@@ -20,12 +20,16 @@ public:
 	virtual void Init() override;
 
 	FCharacterStat* GetStatData(int32 level);
+	FAIInfo* GetAIInfoData(FString type);
 
 	void PlayEffect(FString name, FVector pos);
 	
 private:
 	UPROPERTY()
-	class UDataTable* _dataTable;
+	class UDataTable* _statDataTable;
+
+	UPROPERTY()
+	class UDataTable* _aiDataTable;
 
 	UPROPERTY()
 
