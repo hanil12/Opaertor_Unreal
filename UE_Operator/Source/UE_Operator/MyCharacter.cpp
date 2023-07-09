@@ -89,6 +89,7 @@ float AMyCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AC
 	AActor* DamageCauser)
 {
 	_statComponent->Damaged(Damage);
+	_onDamaged.Broadcast(DamageCauser);
 
 	return Damage;
 }

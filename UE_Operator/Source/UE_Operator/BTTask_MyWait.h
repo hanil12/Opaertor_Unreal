@@ -16,6 +16,7 @@ class UE_OPERATOR_API UBTTask_MyWait : public UBTTask_Wait
 public:
 	virtual void InitializeFromAsset(UBehaviorTree& Asset) override;
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+	virtual void OnInstanceCreated(UBehaviorTreeComponent& OwnerComp) override;
 	bool SearchTarget(UBehaviorTreeComponent& OwnerComp);
 
 private:

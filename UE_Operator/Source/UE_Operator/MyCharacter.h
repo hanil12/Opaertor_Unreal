@@ -8,6 +8,7 @@
 #include "MyCharacter.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FAttackEnd)
+DECLARE_MULTICAST_DELEGATE_OneParam(FTakeDamage, AActor*)
 
 UCLASS()
 class UE_OPERATOR_API AMyCharacter : public ACharacter
@@ -47,6 +48,7 @@ public:
 	void DiedStart();
 
 	FAttackEnd _attackEnd;
+	FTakeDamage _onDamaged;
 
 protected:
 	virtual void SetMesh() {}

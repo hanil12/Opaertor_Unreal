@@ -19,6 +19,8 @@ void UBTTask_MyWait::InitializeFromAsset(UBehaviorTree& Asset)
 	{
 		_detectRange = myGameInstance->GetAIInfoData("Remote")->detectRange;
 	}
+
+	
 }
 
 void UBTTask_MyWait::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -29,6 +31,17 @@ void UBTTask_MyWait::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 	}
+}
+
+void UBTTask_MyWait::OnInstanceCreated(UBehaviorTreeComponent& OwnerComp)
+{
+	Super::OnInstanceCreated(OwnerComp);
+
+	auto currenPawn = Cast<AMyCharacter>(OwnerComp.GetAIOwner()->GetPawn());
+
+	// TODO
+	// 공격 당했을 때  Listner 패턴 구현
+	// 
 }
 
 bool UBTTask_MyWait::SearchTarget(UBehaviorTreeComponent& OwnerComp)

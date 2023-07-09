@@ -38,7 +38,6 @@ void UBTTask_MyMoveTo::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	}
 	else if(distance > _detectRange + 20)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("missed"));
 		OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName(TEXT("Target")), nullptr);
 		AbortTask(OwnerComp, NodeMemory);
 	}
