@@ -1,0 +1,8 @@
+﻿  pch.cpp
+C:\UE4\Sources\Opaertor_Unreal\MultiThread\Server\ServerCore\pch.h(1,9): warning C4068: 알 수 없는 pragma 'one'
+  CoreGlobal.cpp
+  CorePch.cpp
+  CoreTLS.cpp
+  ThreadManager.cpp
+  코드를 생성하고 있습니다...
+  ServerCore.vcxproj -> C:\UE4\Sources\Opaertor_Unreal\MultiThread\Server\Libraries\Debug\ServerCore.lib

@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Main">
+      <UniqueIdentifier>{af7e7cad-609e-4de4-85e6-9eb7f27b15f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utillity">
+      <UniqueIdentifier>{8d50dbe8-21a9-4599-85ff-94c49a24c735}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SpinLockAndSleep.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Event.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Future.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUMain.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="TLS.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="LockBasedStack.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="ConcurrentStack.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="ConcurrentQueue.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServer.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="ConcurrentStack.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="ConcurrentQueue.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
